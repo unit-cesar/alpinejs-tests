@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="pt-br" x-data="appAlpine()">
+<!-- Inicializando um componente Alpine.js no elemento raiz da página com appAlpine() -->
+<!-- Registrando um componente chamado "appAlpine" usando Alpine.data() com script JS no final da página -->
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="author" content="CesarDev - unit.cesar">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/x-icon" href="https://www.google.com/s2/favicons?domain_url=https://alpinejs.dev/">
+
+  <title>Alpine.js - Exemplos Pŕaticos</title>
+
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+  <style>
+    [x-cloak] {
+      display: none !important;
+    }
+
+    .box {
+      padding: 20px;
+      margin: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .transition-example {
+      transition: all 0.3s ease;
+    }
+
+    .fade-enter,
+    .fade-leave-to {
+      opacity: 0;
+    }
+
+    .teleport-target {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #f0f0f0;
+      padding: 10px;
+      border: 1px solid #ddd;
+    }
+  </style>
+</head>
+
+<body x-cloak>
+  <h1>Exemplos de Alpine.js</h1>
+
+  <div class="box">
+    <h2>Directives</h2>
+
+    <!-- x-data -->
+    <div class="box" x-data="{ open: false, count: 0, message: 'Olá Alpine!', items: ['Item 1', 'Item 2', 'Item 3'] }">
+      <h3>x-data</h3>
+      <p>Define o escopo de dados para este componente.</p>
+      <p>Contador: <span x-text="count"></span></p>
+    </div>
+
+    <!-- x-init -->
+    <div class="box" x-data="{ initialized: false }"
+      x-init="initialized = true; console.log('Componente inicializado')">
+      <h3>x-init</h3>
+      <p>Executa código quando o componente é inicializado.</p>
+      <p>Inicializado: <span x-text="initialized"></span></p>
+    </div>
+
+    <!-- x-show -->
+    <div class="box" x-data="{ isVisible: true }">
+      <h3>x-show</h3>
+      <button @click="isVisible = !isVisible">Alternar Visibilidade</button>
+      <p x-show="isVisible">Este elemento é mostrado/escondido com x-show.</p>
+    </div>
+
+    <!-- x-bind -->
+    <div class="box" x-data="{ color: 'red', isDisabled: false }">
+      <h3>x-bind</h3>
+      <p>Vincula atributos HTML a expressões Alpine.</p>
+      <select x-model="color">
+        <option value="red">Vermelho</option>
+        <option value="green">Verde</option>
+        <option value="blue">Azul</option>
+      </select>
+      <input type="checkbox" x-model="isDisabled"> Desabilitar
+      <button :style="'background-color: ' + color" :disabled="isDisabled">Botão</button>
+      <!-- O mesmo que: -->
+      <!-- <button x-bind:style="'background-color: ' + color" x-bind:disabled="isDisabled">Botão</button> -->
+    </div>
+
+    <!-- x-on -->
+    <div class="box" x-data="{ clicks: 0 }">
+      <h3>x-on</h3>
+      <button @click="clicks++">Clique Aqui</button>
+      <p>Cliques: <span x-text="clicks"></span></p>
+      <input @keyup.enter="clicks = 0" placeholder="Pressione Enter para resetar">
+    </div>
+
+    <!-- x-text -->
+    <div class="box" x-data="{ text: 'Texto dinâmico' }">
+      <h3>x-text</h3>
+      <input type="text" x-model="text">
+      <p x-text="text"></p>
+    </div>
+
+    <!-- x-html -->
+    <div class="box" x-data="{ html: '<strong>HTML</strong> dinâmico' }">
+      <h3>x-html</h3>
+      <small>Use com cuidado para evitar XSS</small>
+      <input type="text" x-model="html">
+      <div x-html="html"></div>
+    </div>
+
+    <!-- x-model -->
+    <div class="box" x-data="{ inputText: '', checked: false, selectedOption: 'op1' }">
+      <h3>x-model</h3>
+      <p>Vincula dados a elementos de formulário.</p>
+      <input type="text" x-model="inputText" placeholder="Digite algo">
+      <p>Você digitou: <span x-text="inputText"></span></p>
+
+      <input type="checkbox" x-model="checked">
+      <span x-text="checked ? 'Marcado' : 'Desmarcado'"></span>
+
+      <select x-model="selectedOption">
+        <option value="op1">Opção 1</option>
+        <option value="op2">Opção 2</option>
+      </select>
+      <p>Selecionado: <span x-text="selectedOption"></span></p>
+    </div>
+
+    <!-- x-modelable -->
+    <div class="box" x-data="{ count: 0 }">
+      <h3>x-modelable</h3>
+      <p>Permite expor um estado interno como modelo.</p>
+      <div x-data="{ internalCount: 0 }">
+        <button @click="internalCount++">Incrementar Interno</button>
+        <span x-text="internalCount"></span>
+
+        <div x-modelable="internalCount" x-model="count"></div>
+      </div>
+      <p>Count externo: <span x-text="count"></span></p>
+    </div>
+
+    <!-- x-for -->
+    <div class="box" x-data="{ items: ['Maçã', 'Banana', 'Laranja'] }">
+      <h3>x-for</h3>
+      <template x-for="(item, index) in items" :key="index">
+        <div>
+          <span x-text="index + 1"></span>. <span x-text="item"></span>
+        </div>
+      </template>
+      <button @click="items.push('Novo Item ' + (items.length + 1))">Adicionar Item</button>
+    </div>
+
+    <!-- x-transition -->
+    <div class="box" x-data="{ showTransition: false }">
+      <h3>x-transition</h3>
+      <button @click="showTransition = !showTransition">Alternar Transição</button>
+      <div x-show="showTransition" x-transition:enter="transition-example fade-enter"
+        x-transition:enter-end="transition-example" x-transition:leave="transition-example fade-leave-to">
+        Elemento com transição
+      </div>
+    </div>
+
+    <!-- x-effect -->
+    <div class="box" x-data="{ effectValue: 0 }">
+      <h3>x-effect</h3>
+      <p>Executa código sempre que uma dependência muda. Ver saída no console.</p>
+      <button @click="effectValue++">Incrementar</button>
+      <span x-text="effectValue"></span>
+      <div x-effect="console.log('effectValue mudou para:', effectValue)"></div>
+    </div>
+
+    <!-- x-ignore -->
+    <div class="box">
+      <h3>x-ignore</h3>
+      <p>O segundo bloco é ignorado pelo Alpine.js. Mostra o bloco mas não relaciona a variável.</p>
+      <div x-data="{ var1: 'Test' }">
+        <div>
+          Bloco 1: <span x-text="var1"></span>
+        </div>
+        <div x-ignore>
+          Bloco 2: <span x-text="var1"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- x-ref e $ref-->
+    <div class="box" x-data>
+      <h3>x-ref e $refs</h3>
+      <p>O x-ref permite referenciar elementos DOM dentro do seu componente Alpine, e o $refs é utilizado para
+        acessá-los. Isso é particularmente útil quando você precisa manipular elementos diretamente.</p>
+      <input x-ref="inputField" type="text" placeholder="Digite algo">
+      <button @click="$refs.inputField.focus()">Focar no Input</button>
+    </div>
+
+    <!-- x-cloak -->
+    <div class="box">
+      <h3>x-cloak</h3>
+      <p>Impedir que um bloco de HTML seja inicializado pelo Alpine. O atributo x-cloak é removido quando Alpine é
+        inicializado, evitando flash de conteúdo não processado.</p>
+      <p>Veja o atributo no elemento body.</p>
+    </div>
+
+    <!-- x-teleport -->
+    <div class="box" x-data="{ showTeleport: false }">
+      <h3>x-teleport</h3>
+      <button @click="showTeleport = !showTeleport">Alternar Teleport</button>
+      <template x-teleport="body">
+        <div class="teleport-target" x-show="showTeleport">
+          Este elemento foi teleportado para o final do body!
+        </div>
+      </template>
+    </div>
+
+    <!-- x-if -->
+    <div class="box" x-data="{ showIf: false }">
+      <h3>x-if</h3>
+      <p>Remove/adiciona elementos do DOM (deve estar em template).</p>
+      <button @click="showIf = !showIf">Alternar x-if</button>
+      <template x-if="showIf">
+        <div>Este elemento é completamente removido/adicionado do DOM</div>
+      </template>
+    </div>
+
+    <!-- x-id e $id-->
+    <!-- <div x-data x-id="['div-xpto']" class="box" x-init="$store.xpto1=$id('div-xpto')"> -->
+    <div x-data="{ myId: $id('xpto') }" :id="$id('xpto')" x-init="$store.xpto1 = myId" class="box">
+      <h3>ID gerado: <span x-text="myId"></span></h3>
+
+      <span x-text="$id('div-xpto')"></span>
+      <h3>x-id</h3>
+      <div>Permite que você declare um novo "escopo" para quaisquer novos IDs gerados usando $id(). Ele aceita uma
+        matriz de strings (nomes de ID) e adiciona um sufixo a cada um $id('...') gerado dentro dele que é exclusivo
+        para outros IDs na página.</div>
+      <div>
+        O x-id deve ser usado em conjunto com a $id(...).
+      </div>
+      <p>Gera IDs únicos para ajudar com acessibilidade.</p>
+      <div>
+        <label :for="$id('input')">
+          Label com ID único: <span x-text="$id('input')"></span>
+        </label>
+        <input :id="$id('input')" type="text">
+      </div>
+      <div>
+        <label :for="$id('input')">
+          Label com ID único: <span x-text="$id('input')"></span>
+        </label>
+        <input :id="$id('input')" type="text">
+      </div>
+    </div>
+  </div>
+
+
+  <div class="box">
+    <h2>Magics</h2>
+
+    <!-- $el -->
+    <div class="box" x-data>
+      <h3>$el</h3>
+      <div>O $el é uma propriedade mágica que referencia o elemento DOM atual onde o Alpine está atuando.</div>
+      <button @click="console.log('Elemento:', $el)">Log $el no Console</button>
+      <p>Retorna o elemento DOM atual.</p>
+    </div>
+
+    <!-- $refs -->
+    <div class="box" x-data>
+      <h3>$refs</h3>
+      <input x-ref="magicInput" type="text" placeholder="Digite algo">
+      <button @click="alert($refs.magicInput.value)">Mostrar Valor</button>
+      <p>Acessa elementos marcados com x-ref.</p>
+    </div>
+
+    <!-- $store -->
+    <div class="box">
+      <h3>$store</h3>
+      <p>Acessa dados globais do Alpine.store.</p>
+      <div x-data>
+        <p>Bloco externo</p>
+        <button @click="$store.globalCounter++">Incrementar Contador Global</button>
+        <span x-text="$store.globalCounter"></span>
+      </div>
+      <div>
+        <p>Bloco externo</p>
+        <span x-text="$store.globalCounter"></span>
+      </div>
+    </div>
+
+    <!-- $watch -->
+    <div class="box" x-data="{ watchedValue: 0 }">
+      <h3>$watch</h3>
+      <div>
+        O $watch permite observar mudanças em propriedades específicas e executar ações em resposta a essas mudanças.
+      </div>
+      <div>
+        O $watch é particularmente útil para executar efeitos colaterais ou lógica adicional em resposta a mudanças de
+        estado dentro do componente.
+      </div>
+      <button @click="watchedValue++">Incrementar Valor Observado</button>
+      <span x-text="watchedValue"></span>
+      <!-- x-init pode estar em uma div aleatória ou na principal -->
+      <div x-init="$watch('watchedValue', value => console.log('Valor mudou para:', value))"></div>
+    </div>
+
+    <!-- $dispatch -->
+    <div class="box" x-data @custom-event="alert($event.detail.message)">
+      <h3>$dispatch</h3>
+      <button @click="$dispatch('custom-event', { message: 'Evento personalizado disparado!' })">
+        Disparar Evento
+      </button>
+      <p>Cria e dispara eventos personalizados.</p>
+    </div>
+
+    <!-- $nextTick -->
+    <div class="box" x-data="{ nextTickValue: 0 }">
+      <h3>$nextTick</h3>
+      <p>Chama funções na sequencia de outra, após atualização do DOM. Comparando com uma função anônima, perceba que
+        com a função anônima o valor apenas é atualizado após o Alert.</p>
+      <div>
+        <button @click="nextTickValue++; $nextTick(() => alert('DOM atualizado! $nextTick'))">
+          Incrementar e Alert com $nextTick
+        </button>
+      </div>
+      <hr>
+      <div>
+        <button @click="nextTickValue++; (function(){ alert('DOM atualizado! Funcção Anônima')})()">
+          Incrementar e Alert com Função Anônima
+        </button>
+      </div>
+      <hr>
+      <span x-text="nextTickValue"></span>
+    </div>
+
+    <!-- $root -->
+    <div class="box" x-data data-message2="Hello World!">
+      <h3>$root</h3>
+      <div>É uma propriedade mágica que pode ser usada para recuperar o elemento raiz de qualquer componente Alpine. Em
+        outras palavras, o elemento mais próximo na árvore DOM que contém x-data.</div>
+      <div>
+        <button @click="console.log($root.dataset.message2)">Mostrar $root.dataset.message2</button>
+        <p>Acessa o elemento raiz do componente.</p>
+      </div>
+    </div>
+
+    <!-- $data -->
+    <div class="box" x-data="{ dataValue: 'Dados do componente' }">
+      <h3>$data</h3>
+      <button @click="alert(JSON.stringify($data))">Mostrar $data</button>
+      <p>Retorna todos os dados do componente.</p>
+    </div>
+
+    <!-- $id -->
+    <div class="box" x-data>
+      <h3>$id</h3>
+      <p>Ver <a :href="'#' + $store.xpto1">x-id</a></p>
+      <div x-data>
+        <div x-text="$store.xpto1"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    document.addEventListener('alpine:init', () => {
+      Alpine.store('globalCounter', 0);
+
+      Alpine.data('appAlpine', () => ({
+        init() {
+          console.log('App Alpine inicializado');
+        }
+      }));
+    });
+  </script>
+</body>
+
+</html>
